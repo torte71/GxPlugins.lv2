@@ -37,7 +37,7 @@ jobs:
           release_name: Release latest
           draft: false
           prerelease: true
-    - name: Upload Release Asset: Source code
+    - name: Upload Release Asset (Source code)
       id: upload-release-asset-src
       uses: actions/upload-release-asset@master
       env:
@@ -47,7 +47,7 @@ jobs:
           asset_path: ../GxPlugins.tar.gz
           asset_name: GxPlugins_1.0.tar.gz
           asset_content_type: application
-    - name: Upload Release Asset: Debian package
+    - name: Upload Release Asset (Debian package)
       id: upload-release-asset-deb
       uses: actions/upload-release-asset@master
       env:
