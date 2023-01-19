@@ -20,6 +20,8 @@ jobs:
     - uses: actions/checkout@master
     - name: submodule update
       run: git submodule update --init
+    - name: create source package
+      run: tar -C .. -czf ../GxPlugins.tar.gz $(basename $(pwd))
     - name: install lv2
       run: |
         sudo apt-get install lv2-dev debhelper fakeroot
@@ -35,8 +37,18 @@ jobs:
           release_name: Release latest
           draft: false
           prerelease: true
-    - name: Upload Release Asset
-      id: upload-release-asset
+    - name: Upload Release Asset: Source code
+      id: upload-release-asset-src
+      uses: actions/upload-release-asset@master
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ../GxPlugins.tar.gz
+          asset_name: GxPlugins_1.0.tar.gz
+          asset_content_type: application
+    - name: Upload Release Asset: Debian package
+      id: upload-release-asset-deb
       uses: actions/upload-release-asset@master
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
