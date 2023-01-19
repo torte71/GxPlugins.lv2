@@ -95,5 +95,5 @@ jobs:
       with:
           upload_url: ${{ needs.build.outputs.upload_url }}
           asset_path: plugin.7z
-          asset_name: GxPlugins.lv2_1.0_Win64.7z
+          asset_name: gxplugins_1.0_win64.7z
           asset_content_type: application
