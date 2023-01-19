@@ -90,7 +90,7 @@ dpkg-buildpackage -rfakeroot -uc -us -b
 ```
 or download a prebuild Debian package here:
 
-[gxplugins_1.0_amd64.deb](https://github.com/brummer10/GxPlugins.lv2/releases/download/Latest/gxplugins_1.0_amd64.deb)
+[gxplugins_1.0_amd64.deb](https://github.com/torte71/GxPlugins.lv2/releases/download/v1.0/gxplugins_1.0_amd64.deb)
 
 ## MS-Windows version (64 bit)
 
