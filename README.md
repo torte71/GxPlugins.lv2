@@ -94,7 +94,7 @@ or download a prebuild Debian package here:
 
 ## MS-Windows version (64 bit)
 
-Prebuilt Windows binaries can be downloaded here: [GxPlugins.lv2_1.0_Win64.7z](https://github.com/brummer10/GxPlugins.lv2/releases/download/Latest/GxPlugins.lv2_1.0_Win64.7z)
+Prebuilt Windows binaries can be downloaded here: [gxplugins_1.0_win64.7z](https://github.com/torte71/GxPlugins.lv2/releases/download/v1.0/gxplugins_1.0_win64.7z)
 
 To install, extract the plugins using [7zip](https://www.7-zip.org) into the directory "%APPDATA%\\LV2\\"
 (e.g. "C:\\Users\\XXX\\AppData\\Roaming\\LV2\\").
