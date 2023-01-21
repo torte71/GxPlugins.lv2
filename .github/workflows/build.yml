@@ -145,7 +145,7 @@ jobs:
     - name: Create Archives
       run: |
         VER=${{ github.ref_name }}
-        if [[ $VER == onpush ]]
+        if [[ $VER == onpush ]] \
         || [[ $VER == workflow  ]] ; then
           # normal push: version = "latest"
           VER="latest"
