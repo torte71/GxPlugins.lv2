@@ -11,10 +11,11 @@ defaults:
   run:
     shell: bash
 
-env:
-  BUILD_TYPE: Release
+    #env:
+    #  BUILD_TYPE: Release
 
 jobs:
+  ####################
   create-source-archive:
     runs-on: ubuntu-20.04
 
@@ -39,6 +40,7 @@ jobs:
         name: ${{ env.ARCHIVE_NAME }}
         path: GxPlugins.tar.bz2
 
+  ####################
   build-linux:
     runs-on: ubuntu-latest
 
@@ -67,6 +69,7 @@ jobs:
         name: ${{ env.ARCHIVE_NAME }}
         path: gxplugins_*_amd64.deb
 
+  ####################
   build-windows:
     runs-on: windows-latest
 
@@ -113,17 +116,17 @@ jobs:
         name: ${{ env.ARCHIVE_NAME }}
         path: plugin.7z
 
+  ####################
   release:
     runs-on: ubuntu-20.04
-    #if: ${{ github.ref_type == 'tag'}}
 
     outputs:
         tag-name: ${{ env.TAG_NAME }}
 
     needs:
       - create-source-archive
-        #- build-linux
-        #- build-windows
+      - build-linux
+      - build-windows
 
     steps:
     # move tag: delete old
@@ -135,15 +138,15 @@ jobs:
         tag_name: Latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    # move tag: create new
-    - name: Add tag 'Latest'
-      uses: tvdias/github-tagger@v0.0.1
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        tag: "Latest"
-
-    - name: Download all artifacts
-      uses: actions/download-artifact@v3.0.2
+        #    # move tag: create new
+        #    - name: Add tag 'Latest'
+        #      uses: tvdias/github-tagger@v0.0.1
+        #      with:
+        #        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        #        tag: "Latest"
+        #
+        #    - name: Download all artifacts
+        #      uses: actions/download-artifact@v3.0.2
 
     - name: Create Archives
       run: |
@@ -156,8 +159,8 @@ jobs:
         fi
         echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
         mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${TAG_NAME}_src.tar.bz2
-        #mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${TAG_NAME}_amd64.deb
-        #mv gxplugins-windows/plugin.7z             ./gxplugins_${TAG_NAME}_win64.7z
+        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${TAG_NAME}_amd64.deb
+        mv gxplugins-windows/plugin.7z             ./gxplugins_${TAG_NAME}_win64.7z
 
     - uses: softprops/action-gh-release@v1
       with:
