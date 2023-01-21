@@ -156,9 +156,9 @@ jobs:
         #(cd aether-linux-amd64-GNU; zip -r ../aether-$VER-linux-amd64.zip aether.lv2)
         #(cd aether-linux-i686;      zip -r ../aether-$VER-linux-i686.zip aether.lv2)
         #(cd aether-windows;         zip -r ../aether-$VER-windows-amd64.zip aether.lv2)
-        mv gxplugins-source-code/GxPlugins.tar.bz2 gxplugins_$VER_src.tar.bz2
-        mv gxplugins-linux/gxplugins_*_amd64.deb   gxplugins_$VER_amd64.deb
-        mv gxplugins-windows/plugin.7z             gxplugins_$VER_win64.7z
+        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_$VER_src.tar.bz2
+        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_$VER_amd64.deb
+        mv gxplugins-windows/plugin.7z             ./gxplugins_$VER_win64.7z
 
     - uses: softprops/action-gh-release@v1
       with:
