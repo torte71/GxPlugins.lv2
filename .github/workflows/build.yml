@@ -1,18 +1,15 @@
 name: build
 
-on: [push]
-#on:
-#  push:
-#    tags:
-#      - 'v*'
-#  #if: ${{ github.ref_type == 'tag'}}
+on:
+  push:
+    tags:
+      - 'v*'
+#on: [push]
+#if: ${{ github.ref_type == 'tag'}}
 
 defaults:
   run:
     shell: bash
-
-    #env:
-    #  BUILD_TYPE: Release
 
 jobs:
   ####################
@@ -43,7 +40,6 @@ jobs:
   ####################
   build-linux:
     runs-on: ubuntu-latest
-    #if: ${{ github.ref_type == 'xxx'}}
 
     outputs:
       artifact-name: ${{ env.ARCHIVE_NAME }}
@@ -73,7 +69,6 @@ jobs:
   ####################
   build-windows:
     runs-on: windows-latest
-    #if: ${{ github.ref_type == 'xxx'}}
 
     defaults:
       run:
