@@ -137,8 +137,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     # move tag: create new
     - name: Add tag 'Latest'
-      #uses: tvdias/github-tagger@v0.0.1
-      uses: AaronSadlerUK/github-tagger@node16
+      uses: tvdias/github-tagger@v0.0.1
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         tag: "Latest"
