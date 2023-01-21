@@ -145,10 +145,13 @@ jobs:
     - name: Create Archives
       run: |
         VER=${{ github.ref_name }}
-        # normal push: version = "latest"
-        # push tag: remove leading 'v' from tag (v1.0 -> 1.0)
-        if [[ $VER == onpush ]]; then VER="latest"
-        elif [[ $VER =~ ^v ]]; then VER=${VER:1}
+        if [[ $VER == onpush ]]
+        || [[ $VER == workflow  ]] ; then
+          # normal push: version = "latest"
+          VER="latest"
+        elif [[ $VER =~ ^v ]]; then
+          # push tag: remove leading 'v' from tag (v1.0 -> 1.0)
+          VER=${VER:1}
         fi
         export VER
         #(cd aether-source-code;     zip -r ../aether-$VER-source-code.zip src)
