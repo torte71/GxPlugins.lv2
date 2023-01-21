@@ -23,7 +23,7 @@ jobs:
 
     steps:
       # move tag: delete old
-    - name: Remove tag 'Latest'
+    - name: Delete tag 'Latest'
       #uses: dev-drprasad/delete-tag-and-release@v0.2.0
       uses: dev-drprasad/delete-tag-and-release@master
       with:
@@ -31,12 +31,18 @@ jobs:
         tag_name: Latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # move tag: create new
-    - name: Add tag 'Latest'
-      uses: tvdias/github-tagger@v0.0.1
+      # move tag: create new
+        #- name: Add tag 'Latest'
+        #  uses: tvdias/github-tagger@v0.0.1
+        #  with:
+        #    repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        #    tag: "Latest"
+    - name: Create tag 'Latest'
+      uses: negz/create-tag@v1
       with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        tag: "Latest"
+        version: Latest
+        message: Latest version
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Check out sources
       uses: actions/checkout@v3.3.0
