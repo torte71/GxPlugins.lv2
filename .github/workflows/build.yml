@@ -32,17 +32,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # move tag: create new
-        #- name: Add tag 'Latest'
-        #  uses: tvdias/github-tagger@v0.0.1
-        #  with:
-        #    repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        #    tag: "Latest"
-    - name: Create tag 'Latest'
-      uses: negz/create-tag@v1
+    - name: Add tag 'Latest'
+      uses: tvdias/github-tagger@v0.0.1
       with:
-        version: Latest
-        message: Latest version
-        token: ${{ secrets.GITHUB_TOKEN }}
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        tag: "Latest"
 
     - name: Check out sources
       uses: actions/checkout@v3.3.0
@@ -162,9 +156,9 @@ jobs:
         #(cd aether-linux-amd64-GNU; zip -r ../aether-$VER-linux-amd64.zip aether.lv2)
         #(cd aether-linux-i686;      zip -r ../aether-$VER-linux-i686.zip aether.lv2)
         #(cd aether-windows;         zip -r ../aether-$VER-windows-amd64.zip aether.lv2)
-        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_$VER_src.tar.bz2
-        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_$VER_amd64.deb
-        mv gxplugins-windows/plugin.7z             ./gxplugins_$VER_win64.7z
+        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${VER}_src.tar.bz2
+        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${VER}_amd64.deb
+        mv gxplugins-windows/plugin.7z             ./gxplugins_${VER}_win64.7z
         find
 
     - uses: softprops/action-gh-release@v1
