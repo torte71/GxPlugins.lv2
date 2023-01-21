@@ -22,22 +22,6 @@ jobs:
         artifact-name: ${{ env.ARCHIVE_NAME }}
 
     steps:
-      #      # move tag: delete old
-      #    - name: Delete tag 'Latest'
-      #      #uses: dev-drprasad/delete-tag-and-release@v0.2.0
-      #      uses: dev-drprasad/delete-tag-and-release@master
-      #      with:
-      #        delete_release: false
-      #        tag_name: Latest
-      #      env:
-      #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #      # move tag: create new
-      #    - name: Add tag 'Latest'
-      #      uses: tvdias/github-tagger@v0.0.1
-      #      with:
-      #        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-      #        tag: "Latest"
-
     - name: Check out sources
       uses: actions/checkout@v3.3.0
       with:
@@ -133,13 +117,16 @@ jobs:
     runs-on: ubuntu-20.04
     #if: ${{ github.ref_type == 'tag'}}
 
+    outputs:
+        tag-name: ${{ env.TAG_NAME }}
+
     needs:
       - create-source-archive
       - build-linux
       - build-windows
 
     steps:
-      # move tag: delete old
+    # move tag: delete old
     - name: Delete tag 'Latest'
       #uses: dev-drprasad/delete-tag-and-release@v0.2.0
       uses: dev-drprasad/delete-tag-and-release@master
@@ -148,7 +135,7 @@ jobs:
         tag_name: Latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # move tag: create new
+    # move tag: create new
     - name: Add tag 'Latest'
       uses: tvdias/github-tagger@v0.0.1
       with:
@@ -156,34 +143,26 @@ jobs:
         tag: "Latest"
 
     - name: Download all artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v3.0.2
 
     - name: Create Archives
       run: |
-        VER=${{ github.ref_name }}
-        if [[ $VER == onpush ]] \
-        || [[ $VER == workflow  ]] ; then
-          # normal push: version = "latest"
-          VER="latest"
-        elif [[ $VER =~ ^v ]]; then
-          # push tag: remove leading 'v' from tag (v1.0 -> 1.0)
-          VER=${VER:1}
+        TAG_NAME=${{ github.ref_TAG_NAME }} # branch or tag
+        if [[ ${{ github.ref_type }} == 'tag' ]] \
+        && [[ $TAG_NAME =~ ^v[0-9] ]] ; then
+          TAG_NAME=${TAG_NAME:1} # remove leading 'v' from tag (v1.0 -> 1.0)
+        elif [[ $TAG_NAME == onpush ]] ; then
+          TAG_NAME=Latest
         fi
-        export VER
-        #(cd aether-source-code;     zip -r ../aether-$VER-source-code.zip src)
-        #(cd aether-macos;           zip -r ../aether-$VER-macos-amd64.zip aether.lv2)
-        #(cd aether-linux-amd64-GNU; zip -r ../aether-$VER-linux-amd64.zip aether.lv2)
-        #(cd aether-linux-i686;      zip -r ../aether-$VER-linux-i686.zip aether.lv2)
-        #(cd aether-windows;         zip -r ../aether-$VER-windows-amd64.zip aether.lv2)
-        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${VER}_src.tar.bz2
-        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${VER}_amd64.deb
-        mv gxplugins-windows/plugin.7z             ./gxplugins_${VER}_win64.7z
-        find
+        echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
+        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${TAG_NAME}_src.tar.bz2
+        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${TAG_NAME}_amd64.deb
+        mv gxplugins-windows/plugin.7z             ./gxplugins_${TAG_NAME}_win64.7z
 
     - uses: softprops/action-gh-release@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: Latest
+        tag_name: ${{ env.TAG_NAME }}
         prerelease: true
         files: |
           *_src.tar.bz2
