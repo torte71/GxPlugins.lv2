@@ -160,6 +160,7 @@ jobs:
           TAG_NAME=Latest
         fi
         echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
+        find
         mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${TAG_NAME}_src.tar.bz2
         #mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${TAG_NAME}_amd64.deb
         #mv gxplugins-windows/plugin.7z             ./gxplugins_${TAG_NAME}_win64.7z
