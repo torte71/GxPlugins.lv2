@@ -43,7 +43,7 @@ jobs:
   ####################
   build-linux:
     runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'xxx'}}
+    #if: ${{ github.ref_type == 'xxx'}}
 
     outputs:
       artifact-name: ${{ env.ARCHIVE_NAME }}
@@ -73,7 +73,7 @@ jobs:
   ####################
   build-windows:
     runs-on: windows-latest
-    if: ${{ github.ref_type == 'xxx'}}
+    #if: ${{ github.ref_type == 'xxx'}}
 
     defaults:
       run:
@@ -127,10 +127,11 @@ jobs:
 
     needs:
       - create-source-archive
-        #      - build-linux
-        #      - build-windows
+      - build-linux
+      - build-windows
 
     steps:
+      # required?
       #    # move tag: delete old
       #    - name: Delete tag 'Latest'
       #      #uses: dev-drprasad/delete-tag-and-release@v0.2.0
@@ -156,13 +157,11 @@ jobs:
         if [[ ${{ github.ref_type }} == 'tag' ]] \
         && [[ $TAG_SHORT =~ ^v[0-9] ]] ; then
           TAG_SHORT=${TAG_SHORT:1} # remove leading 'v' from tag (v1.0 -> 1.0)
-        elif [[ $TAG_SHORT == onpush ]] ; then
-          TAG_SHORT=Latest
         fi
         echo "TAG_SHORT=$TAG_SHORT" >> "$GITHUB_ENV"
         mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${TAG_SHORT}_src.tar.bz2
-        #mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${TAG_SHORT}_amd64.deb
-        #mv gxplugins-windows/plugin.7z             ./gxplugins_${TAG_SHORT}_win64.7z
+        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${TAG_SHORT}_amd64.deb
+        mv gxplugins-windows/plugin.7z             ./gxplugins_${TAG_SHORT}_win64.7z
 
     - uses: softprops/action-gh-release@v1
       with:
@@ -170,6 +169,6 @@ jobs:
         tag_name: ${{ github.ref_name }}
         prerelease: true
         files: |
-          *_src.tar.bz2
-          *_amd64.deb
-          *_win64.7z
+          gxplugins_${{ env.TAG_SHORT }}_src.tar.bz2
+          gxplugins_${{ env.TAG_SHORT }}_amd64.deb
+          gxplugins_${{ env.TAG_SHORT }}_win64.7z
