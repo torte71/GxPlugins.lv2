@@ -153,12 +153,12 @@ jobs:
     - name: Create Archives
       run: |
         TAG_NAME=${{ github.ref_name }} # branch or tag
-        if [[ ${{ github.ref_type }} == 'tag' ]] \
-        && [[ $TAG_NAME =~ ^v[0-9] ]] ; then
-          TAG_NAME=${TAG_NAME:1} # remove leading 'v' from tag (v1.0 -> 1.0)
-        elif [[ $TAG_NAME == onpush ]] ; then
-          TAG_NAME=Latest
-        fi
+        #if [[ ${{ github.ref_type }} == 'tag' ]] \
+        #&& [[ $TAG_NAME =~ ^v[0-9] ]] ; then
+        #  TAG_NAME=${TAG_NAME:1} # remove leading 'v' from tag (v1.0 -> 1.0)
+        #elif [[ $TAG_NAME == onpush ]] ; then
+        #  TAG_NAME=Latest
+        #fi
         echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
         find
         mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${TAG_NAME}_src.tar.bz2
