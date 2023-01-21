@@ -159,6 +159,7 @@ jobs:
         mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_$VER_src.tar.bz2
         mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_$VER_amd64.deb
         mv gxplugins-windows/plugin.7z             ./gxplugins_$VER_win64.7z
+        find
 
     - uses: softprops/action-gh-release@v1
       with:
@@ -166,6 +167,6 @@ jobs:
         tag_name: Latest
         prerelease: true
         files: |
-          gxplugins_*_src.tar.bz2
-          gxplugins_*_amd64.deb
-          gxplugins_*_win64.7z
+          *_src.tar.bz2
+          *_amd64.deb
+          *_win64.7z
