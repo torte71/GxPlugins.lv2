@@ -32,11 +32,11 @@ jobs:
       #      env:
       #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #      # move tag: create new
-    - name: Add tag 'Latest'
-      uses: tvdias/github-tagger@v0.0.1
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        tag: "Latest"
+      #    - name: Add tag 'Latest'
+      #      uses: tvdias/github-tagger@v0.0.1
+      #      with:
+      #        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      #        tag: "Latest"
 
     - name: Check out sources
       uses: actions/checkout@v3.3.0
