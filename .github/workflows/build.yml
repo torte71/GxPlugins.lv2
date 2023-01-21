@@ -124,7 +124,7 @@ jobs:
     - name: Set Archive Name
       run: echo "ARCHIVE_NAME=gxplugins-windows" >> "$GITHUB_ENV"
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3.1.2
       with:
         name: ${{ env.ARCHIVE_NAME }}
         path: plugin.7z
@@ -166,6 +166,6 @@ jobs:
         tag_name: Latest
         prerelease: true
         files: |
-          gxplugins_$VER_src.tar.bz2
-          gxplugins_$VER_amd64.deb
-          gxplugins_$VER_win64.7z
+          gxplugins_*_src.tar.bz2
+          gxplugins_*_amd64.deb
+          gxplugins_*_win64.7z
