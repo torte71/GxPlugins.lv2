@@ -53,7 +53,7 @@ jobs:
     - uses: actions/upload-artifact@v3.1.2
       with:
         name: ${{ env.ARCHIVE_NAME }}
-        path: ../GxPlugins.tar.bz2
+        path: ${{github.workspace}}/../GxPlugins.tar.bz2
 
   build-linux:
     runs-on: ubuntu-latest
@@ -81,7 +81,7 @@ jobs:
     - uses: actions/upload-artifact@v3.1.2
       with:
         name: ${{ env.ARCHIVE_NAME }}
-        path: ../gxplugins_*_amd64.deb
+        path: ${{github.workspace}}/../GxPlugins.tar.bz2
 
   build-windows:
     runs-on: windows-latest
