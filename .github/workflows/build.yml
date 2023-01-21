@@ -21,6 +21,7 @@ jobs:
     outputs:
         artifact-name: ${{ env.ARCHIVE_NAME }}
 
+    steps:
       # move tag: delete old
     - name: Remove tag 'Latest'
       uses: dev-drprasad/delete-tag-and-release@v0.2.0
