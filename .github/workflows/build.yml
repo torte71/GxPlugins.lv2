@@ -1,74 +1,100 @@
 name: build
 
 on: [push]
+#on:
+#  push:
+#    tags:
+#      - 'v*'
+#  #if: ${{ github.ref_type == 'tag'}}
+
+defaults:
+  run:
+    shell: bash
 
 env:
-  VERSION: "1.0"
+  BUILD_TYPE: Release
 
 jobs:
-  build:
+  create-source-archive:
+    runs-on: ubuntu-20.04
+
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
+        artifact-name: ${{ env.ARCHIVE_NAME }}
 
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: remove tag
-      uses: dev-drprasad/delete-tag-and-release@master
+      # move tag: delete old
+    - name: Remove tag 'Latest'
+      uses: dev-drprasad/delete-tag-and-release@v0.2.0
       with:
         delete_release: false
         tag_name: Latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - uses: actions/checkout@master
-    - name: submodule update
-      run: git submodule update --init
+        # move tag: create new
+    - name: Add tag 'Latest'
+      uses: tvdias/github-tagger@v0.0.1
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        tag: "Latest"
+
+    - name: Check out sources
+      uses: actions/checkout@v3.3.0
+      with:
+        submodules: recursive
+
+        #- name: submodule update
+        #  run: git submodule update --init
     - name: create source package
-      run: tar -C .. --exclude=.git* --transform "s/$(basename $(pwd))/GxPlugins_${{ env.VERSION }}/" -cjf ../GxPlugins.tar.bz2 $(basename $(pwd))
+      run: tar -C .. --exclude=.git* -cjf ../GxPlugins.tar.bz2 $(basename $(pwd))
+
+    - name: Set Archive Name
+      run: echo "ARCHIVE_NAME=gxplugins-source-code" >> "$GITHUB_ENV"
+
+    - uses: actions/upload-artifact@v3.1.2
+      with:
+        name: ${{ env.ARCHIVE_NAME }}
+        path: ../GxPlugins.tar.bz2
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    outputs:
+      artifact-name: ${{ env.ARCHIVE_NAME }}
+
+    steps:
+    - name: Check out sources
+      uses: actions/checkout@v3.3.0
+      with:
+        submodules: recursive
+
+        #- name: submodule update
+        #  run: git submodule update --init
     - name: install lv2
       run: |
         sudo apt-get install lv2-dev debhelper fakeroot
     - name: build deb
       run: dpkg-buildpackage -rfakeroot -uc -us -b
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@master
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          tag_name: Latest
-          release_name: Release latest
-          draft: false
-          prerelease: true
-    - name: Upload Release Asset (Source code)
-      id: upload-release-asset-src
-      uses: actions/upload-release-asset@master
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ../GxPlugins.tar.bz2
-          asset_name: gxplugins_${{ env.VERSION }}_src.tar.bz2
-          asset_content_type: application
-    - name: Upload Release Asset (Debian package)
-      id: upload-release-asset-deb
-      uses: actions/upload-release-asset@master
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ../gxplugins_${{ env.VERSION }}_amd64.deb
-          asset_name: gxplugins_${{ env.VERSION }}_amd64.deb
-          asset_content_type: application
 
-  build-win:
-    needs: build
+    - name: Set Archive Name
+      run: echo "ARCHIVE_NAME=gxplugins-linux" >> "$GITHUB_ENV"
+
+    - uses: actions/upload-artifact@v3.1.2
+      with:
+        name: ${{ env.ARCHIVE_NAME }}
+        path: ../gxplugins_*_amd64.deb
+
+  build-windows:
     runs-on: windows-latest
+
     defaults:
       run:
         shell: msys2 {0}
+
+    outputs:
+        artifact-name: ${{ env.ARCHIVE_NAME }}
+
     steps:
-    - uses: msys2/setup-msys2@v2
+    - name: Prepare MSys2
+      uses: msys2/setup-msys2@v2
       with:
         update: true
         install: >-
@@ -81,15 +107,19 @@ jobs:
           mingw-w64-x86_64-pkgconf
           pkgconf
           mingw-w64-x86_64-7zip
-    - uses: actions/checkout@master
-    - name: submodule update
-      run: git submodule update --init
+
+    - name: Check out sources
+      uses: actions/checkout@v3.3.0
+      with:
+        submodules: recursive
+
     - name: make
       run: make -j && make DESTDIR=$(pwd)/_bin install
     - name: add license and readme
       run: cp LICENSE README.md _bin~/.lv2/
     - name: zip
       run: mv _bin~/.lv2 _bin~/lv2 ; cd _bin~ ; 7z a -mx9 ../plugin.7z lv2 ; cd ..
+
     - name: upload
       id: upload-release-asset
       uses: actions/upload-release-asset@master
@@ -100,3 +130,52 @@ jobs:
           asset_path: plugin.7z
           asset_name: gxplugins_${{ env.VERSION }}_win64.7z
           asset_content_type: application
+
+    - name: Set Archive Name
+      run: echo "ARCHIVE_NAME=gxplugins-windows" >> "$GITHUB_ENV"
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.ARCHIVE_NAME }}
+        path: plugin.7z
+
+  release:
+    runs-on: ubuntu-20.04
+    #if: ${{ github.ref_type == 'tag'}}
+
+    needs:
+      - create-source-archive
+      - build-linux
+      - build-windows
+
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+
+    - name: Create Archives
+      run: |
+        VER=${{ github.ref_name }}
+        # normal push: version = "latest"
+        # push tag: remove leading 'v' from tag (v1.0 -> 1.0)
+        if [[ $VER == onpush ]]; then VER="latest"
+        elif [[ $VER =~ ^v ]]; then VER=${VER:1}
+        fi
+        export VER
+        #(cd aether-source-code;     zip -r ../aether-$VER-source-code.zip src)
+        #(cd aether-macos;           zip -r ../aether-$VER-macos-amd64.zip aether.lv2)
+        #(cd aether-linux-amd64-GNU; zip -r ../aether-$VER-linux-amd64.zip aether.lv2)
+        #(cd aether-linux-i686;      zip -r ../aether-$VER-linux-i686.zip aether.lv2)
+        #(cd aether-windows;         zip -r ../aether-$VER-windows-amd64.zip aether.lv2)
+        mv gxplugins-source-code/GxPlugins.tar.bz2 gxplugins_$VER_src.tar.bz2
+        mv gxplugins-linux/gxplugins_*_amd64.deb   gxplugins_$VER_amd64.deb
+        mv gxplugins-windows/plugin.7z             gxplugins_$VER_win64.7z
+
+    - uses: softprops/action-gh-release@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: Latest
+        prerelease: true
+        files: |
+          gxplugins_$VER_src.tar.bz2
+          gxplugins_$VER_amd64.deb
+          gxplugins_$VER_win64.7z
