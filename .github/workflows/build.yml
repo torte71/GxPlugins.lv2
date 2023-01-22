@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     outputs:
-        artifact-name: ${{ env.ARCHIVE_NAME }}
+      artifact-name: ${{ env.ARCHIVE_NAME }}
 
     steps:
     - name: Check out sources
@@ -75,7 +75,7 @@ jobs:
         shell: msys2 {0}
 
     outputs:
-        artifact-name: ${{ env.ARCHIVE_NAME }}
+      artifact-name: ${{ env.ARCHIVE_NAME }}
 
     steps:
     - name: Prepare MSys2
@@ -118,7 +118,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     outputs:
-        tag-short: ${{ env.TAG_SHORT }}
+      tag-short: ${{ env.TAG_SHORT }}
 
     needs:
       - create-source-archive
