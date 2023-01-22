@@ -128,17 +128,7 @@ jobs:
         #      - build-windows
 
     steps:
-      #    - name: Move 'Latest' tag
-      #      uses: richardsimko/update-tag@v1.0.7
-      #      with:
-      #        tag_name: Latest
-      #      env:
-      #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Download all artifacts
-      uses: actions/download-artifact@v3.0.2
-
-    - name: Create Archives
+    - name: Set short tag name
       run: |
         TAG_SHORT=${{ github.ref_name }} # branch or tag
         if [[ ${{ github.ref_type }} == 'tag' ]] \
@@ -146,13 +136,32 @@ jobs:
           TAG_SHORT=${TAG_SHORT:1} # remove leading 'v' from tag (v1.0 -> 1.0)
         fi
         echo "TAG_SHORT=$TAG_SHORT" >> "$GITHUB_ENV"
-        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${TAG_SHORT}_src.tar.bz2
-        #mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${TAG_SHORT}_amd64.deb
-        #mv gxplugins-windows/plugin.7z             ./gxplugins_${TAG_SHORT}_win64.7z
+        echo "TAG_SHOT=$TAG_SHORT"
+        echo "GITHUB_ENV=$GITHUB_ENV"
+
+      # required?
+    - name: Move 'Latest' tag
+      uses: richardsimko/update-tag@v1.0.7
+      with:
+        tag_name: Latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3.0.2
+
+    - name: Create Archives
+      run: |
+        #        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_0.6_src.tar.bz2
+        #        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_0.6_amd64.deb
+        #        mv gxplugins-windows/plugin.7z             ./gxplugins_0.6_win64.7z
+        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${{ env.TAG_SHORT }}_src.tar.bz2
+        #mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${{ env.TAG_SHORT }}_amd64.deb
+        #mv gxplugins-windows/plugin.7z             ./gxplugins_${{ env.TAG_SHORT }}_win64.7z
 
     - uses: softprops/action-gh-release@v1
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        #token: ${{ secrets.GITHUB_TOKEN }}
         tag_name: ${{ github.ref_name }}
         prerelease: true
         files: |
