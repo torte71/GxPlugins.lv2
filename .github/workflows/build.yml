@@ -127,21 +127,12 @@ jobs:
 
     steps:
       # required?
-      #    # move tag: delete old
-      #    - name: Delete tag 'Latest'
-      #      #uses: dev-drprasad/delete-tag-and-release@v0.2.0
-      #      uses: dev-drprasad/delete-tag-and-release@master
-      #      with:
-      #        delete_release: false
-      #        tag_name: Latest
-      #      env:
-      #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #    # move tag: create new
-      #    - name: Add tag 'Latest'
-      #      uses: tvdias/github-tagger@v0.0.1
-      #      with:
-      #        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-      #        tag: "Latest"
+    - name: Move 'Latest' tag
+      uses: richardsimko/update-tag@v1.0.7
+      with:
+        tag_name: Latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Download all artifacts
       uses: actions/download-artifact@v3.0.2
