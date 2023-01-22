@@ -144,6 +144,13 @@ jobs:
       #        repo-token: "${{ secrets.GITHUB_TOKEN }}"
       #        tag: "Latest"
 
+      - name: Move 'Latest' tag
+        uses: richardsimko/update-tag@v1.0.7
+        with:
+          tag_name: Latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Download all artifacts
       uses: actions/download-artifact@v3.0.2
 
