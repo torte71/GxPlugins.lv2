@@ -148,9 +148,12 @@ jobs:
 
     - name: Create Archives
       run: |
-        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${{ env.TAG_SHORT }}_src.tar.bz2
-        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${{ env.TAG_SHORT }}_amd64.deb
-        mv gxplugins-windows/plugin.7z             ./gxplugins_${{ env.TAG_SHORT }}_win64.7z
+        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_0.6_src.tar.bz2
+        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_0.6_amd64.deb
+        mv gxplugins-windows/plugin.7z             ./gxplugins_0.6_win64.7z
+        #        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${{ env.TAG_SHORT }}_src.tar.bz2
+        #        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${{ env.TAG_SHORT }}_amd64.deb
+        #        mv gxplugins-windows/plugin.7z             ./gxplugins_${{ env.TAG_SHORT }}_win64.7z
 
     - uses: softprops/action-gh-release@v1
       with:
