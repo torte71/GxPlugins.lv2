@@ -128,10 +128,6 @@ jobs:
         #      - build-windows
 
     steps:
-      - name: Move 'Latest' tag
-        uses: richardsimko/update-tag@v1.0.7
-        with:
-          tag_name: Latest
       #    # move tag: delete old
       #    - name: Delete tag 'Latest'
       #      #uses: dev-drprasad/delete-tag-and-release@v0.2.0
