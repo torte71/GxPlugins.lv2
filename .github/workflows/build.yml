@@ -34,7 +34,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3.1.2
       with:
-        name: ${{ outputs.artifact-name }}
+        name: ${{ job.outputs.artifact-name }}
         path: GxPlugins.tar.bz2
 
   ####################
@@ -61,7 +61,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3.1.2
       with:
-        name: ${{ outputs.artifact-name }}
+        name: ${{ job.outputs.artifact-name }}
         path: gxplugins_*_amd64.deb
 
   ####################
@@ -106,7 +106,7 @@ jobs:
 
     - uses: actions/upload-artifact@v3.1.2
       with:
-        name: ${{ outputs.artifact-name }}
+        name: ${{ job.outputs.artifact-name }}
         path: plugin.7z
 
   ####################
