@@ -126,6 +126,15 @@ jobs:
       - build-windows
 
     steps:
+    - name: Set short tag name
+      run: |
+        TAG_SHORT=${{ github.ref_name }} # branch or tag
+        if [[ ${{ github.ref_type }} == 'tag' ]] \
+        && [[ $TAG_SHORT =~ ^v[0-9] ]] ; then
+          TAG_SHORT=${TAG_SHORT:1} # remove leading 'v' from tag (v1.0 -> 1.0)
+        fi
+        echo "TAG_SHORT=$TAG_SHORT" >> "$GITHUB_ENV"
+
       # required?
     - name: Move 'Latest' tag
       uses: richardsimko/update-tag@v1.0.7
@@ -139,15 +148,9 @@ jobs:
 
     - name: Create Archives
       run: |
-        TAG_SHORT=${{ github.ref_name }} # branch or tag
-        if [[ ${{ github.ref_type }} == 'tag' ]] \
-        && [[ $TAG_SHORT =~ ^v[0-9] ]] ; then
-          TAG_SHORT=${TAG_SHORT:1} # remove leading 'v' from tag (v1.0 -> 1.0)
-        fi
-        echo "TAG_SHORT=$TAG_SHORT" >> "$GITHUB_ENV"
-        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${TAG_SHORT}_src.tar.bz2
-        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${TAG_SHORT}_amd64.deb
-        mv gxplugins-windows/plugin.7z             ./gxplugins_${TAG_SHORT}_win64.7z
+        mv gxplugins-source-code/GxPlugins.tar.bz2 ./gxplugins_${{ env.TAG_SHORT }}_src.tar.bz2
+        mv gxplugins-linux/gxplugins_*_amd64.deb   ./gxplugins_${{ env.TAG_SHORT }}_amd64.deb
+        mv gxplugins-windows/plugin.7z             ./gxplugins_${{ env.TAG_SHORT }}_win64.7z
 
     - uses: softprops/action-gh-release@v1
       with:
