@@ -1,4 +1,4 @@
--workflow:v1.1
+-workflow:v1.2
 To compile the GxPlugins.lv2 LV2 plugins on MS-Windows:
 
 - Download and install MSYS2 from https://www.msys2.org/
