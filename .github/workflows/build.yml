@@ -133,8 +133,6 @@ jobs:
           TAG_SHORT=${TAG_SHORT:1} # remove leading 'v' from tag (v1.0 -> 1.0)
         fi
         echo "TAG_SHORT=$TAG_SHORT" >> "$GITHUB_ENV"
-        echo "TAG_SHOT=$TAG_SHORT"
-        echo "GITHUB_ENV=$GITHUB_ENV"
 
 # required?
 #    - name: Move 'Latest' tag
